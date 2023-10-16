@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: xrd-client
+spec:
+  containers:
+  - name: xrd-client
+    image: jostfc/xrdclient:1.0
+    ports:
+    - containerPort: 1094
+    command: ["sleep"]
+    args: ["900000"]
