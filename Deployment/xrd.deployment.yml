@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "xrootd-gw"
+  labels:
+    app: xrootd-gateway
+    tier: xrootd-gw
+spec:
+  selector:
+    matchLabels:
+      tier: xrootd-gw
+      app: xrootd-gateway
+  template:
+    metadata:
+      labels:
+        tier: xrootd-gw
+        app: xrootd-gateway
+    spec:
+      securityContext:
+        runAsUser: 65432
+        runAsGroup: 65432
+      containers:
+        - name: xrootd-gateway
+          image: jostfc/xrdclient:0.15
+          ports:
+          - containerPort: 1094
+            name: xrootd-port
+          volumeMounts:
+            - name: gateway
+              mountPath: "/etc/gateway"
+              readOnly: true
+            - name: ceph-config
+              mountPath: /etc/xrootd/xrootd-ceph.cfg
+              readOnly: true
+            - name: cephsum
+              mountPath: /etc/xrootd/xrd_cephsum.sh
+              readOnly: true
+            - name: ceph
+              mountPath: /etc/ceph
+              readOnly: true
+            - name: healthcheck
+              mountPath: /usr/bin/xrootd-health-gateway
+            - name: xrdtpc
+              mountPath: /etc/xrootd/xrdcp-tpc.sh
+            - name: namelib
+              mountPath: /etc/xrootd/storage.xml
+            - name: fntest
+              mountPath: /tmp/fn
+      volumes:
+        - name: gateway
+          hostPath:
+            path: /etc/gateway
+        - name: ceph-config
+          hostPath:
+            path: /etc/gateway/xrootd-gateway.cfg
+        - name: cephsum
+          hostPath:
+            path: /etc/gateway/xrd_cephsum.sh
+        - name: ceph
+          hostPath:
+            path: /etc/gateway/ceph
+        - name: healthcheck
+          hostPath:
+            path: /usr/bin/xrootd-health-gateway
+        - name: xrdtpc
+          hostPath:
+            path: /etc/gateway/xrdcp-tpc.sh
+        - name: namelib
+          hostPath:
+            path: /etc/gateway/storage.xml
+        - name: fntest
+          hostPath:
+            path: /tmp/fntest
