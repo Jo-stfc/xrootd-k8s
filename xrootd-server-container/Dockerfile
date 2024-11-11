@@ -1,14 +1,14 @@
 FROM rockylinux:8
-ARG XROOTD_VERSION=5.7.1-3
-ARG XRDCEPH_VERSION=5.7.1-3
+ARG XROOTD_VERSION=5.7.1-4
+ARG XRDCEPH_VERSION=5.7.1-4
 ARG CEPH_VERSION=14.2.22-0
 LABEL xrootd-ver=$XROOTD_VERSION
 LABEL xrdceph-ver=$XRDCEPH_VERSION
 LABEL ceph-ver=$CEPH_VERSION
 
 # xrootd user - needs to be consistent with the host
-RUN groupadd --gid 65432 xrootd && \
-    useradd --gid xrootd --uid 65432 xrootd
+RUN groupadd --gid 988 xrootd && \
+    useradd --gid xrootd --uid 991 xrootd
 
 # Repositories
 COPY *.repo /etc/yum.repos.d/
@@ -46,7 +46,8 @@ RUN dnf -y versionlock add ceph-${CEPH_VERSION}.el8.x86_64 \
                            xrootd-server-${XROOTD_VERSION}.el8.x86_64 \
                            xrootd-server-libs-${XROOTD_VERSION}.el8.x86_64 \
                            xrootd-ceph-buffered-${XRDCEPH_VERSION}.el8.x86_64 \
-                           xrootd-voms-${XROOTD_VERSION}.el8.x86_64
+                           xrootd-voms-${XROOTD_VERSION}.el8.x86_64 \
+                           xrootd-scitokens-${XROOTD_VERSION}.el8.x86_64
 
 RUN dnf -y versionlock list
 
@@ -63,6 +64,7 @@ RUN dnf -y install xrootd-ceph-buffered \
                    xrootd-server \
                    xrootd-server-libs \
                    xrootd-voms \
+                   xrootd-scitokens \
                    jemalloc
 
 
